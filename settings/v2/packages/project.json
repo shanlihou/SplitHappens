@@ -5,5 +5,12 @@
       "width": 1179,
       "height": 2556
     }
-  }
+  },
+  "layer": [
+    {
+      "name": "drawNode",
+      "value": 1
+    }
+  ],
+  "custom_joint_texture_layouts": []
 }

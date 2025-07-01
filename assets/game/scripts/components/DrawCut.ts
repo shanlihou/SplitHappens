@@ -1,16 +1,23 @@
-import { _decorator, Component, Node, Graphics, Vec2, Vec3, EventTouch, UITransform, Camera, Canvas } from 'cc';
+import { _decorator, Component, Node, Graphics, Vec2, Vec3, EventTouch, UITransform, Camera, Canvas, RenderTexture, Sprite, SpriteFrame, Size, CCInteger } from 'cc';
 const { ccclass, property } = _decorator;
 
 @ccclass('DrawCut')
 export class DrawCut extends Component {
-    @property(Graphics)
-    graphics: Graphics = null!;
-
     @property(Camera)
     camera: Camera = null!;
 
-    @property(Canvas)
-    canvas: Canvas = null!;
+    @property(Sprite)
+    drawingSprite: Sprite = null!;
+
+    @property(CCInteger)
+    height: number = 0;
+
+    @property(CCInteger) 
+    width: number = 0;
+
+    private graphics: Graphics = null;
+
+    private renderTexture: RenderTexture = null!;
 
     private isDrawing: boolean = false;
     private drawPoints: Vec2[] = [];
@@ -18,8 +25,55 @@ export class DrawCut extends Component {
     private lineColor: string = '#FF0000';
 
     start() {
+        this.initRenderTexture();
         this.initGraphics();
         this.setupTouchEvents();
+    }
+
+    private initRenderTexture() {
+        const spriteframe = this.drawingSprite.spriteFrame;
+        const sp = new SpriteFrame();
+        sp.reset({
+            originalSize: spriteframe.getOriginalSize(),
+            rect: spriteframe.getRect(),
+            offset: spriteframe.getOffset(),
+            isRotate: spriteframe.isRotated(),
+            borderTop: spriteframe.insetTop,
+            borderLeft: spriteframe.insetLeft,
+            borderBottom: spriteframe.insetBottom,
+            borderRight: spriteframe.insetRight,
+        });
+
+        const renderTex = this.renderTexture = new RenderTexture();
+        // 获取屏幕宽高
+
+        renderTex.reset({
+            width: this.width,
+            height: this.height,
+            // colorFormat: RenderTexture.PixelFormat.RGBA8888,
+            // depthStencilFormat: RenderTexture.DepthStencilFormat.DEPTH_24_STENCIL_8
+        });
+        this.camera.targetTexture = renderTex;
+        sp.texture = renderTex;
+        this.drawingSprite.spriteFrame = sp;
+
+
+
+        // this.renderTexture = new RenderTexture();
+        // this.renderTexture.resize(this.width, this.height);
+        
+        // // 创建用于检测的Sprite
+        // const sp = new SpriteFrame();
+        // sp.texture = this.renderTexture;
+        // this.drawingSprite.spriteFrame = sp;
+        // const uit = this.drawingSprite.node.getComponent(UITransform);
+        // uit.setContentSize(this.width, this.height);
+        // this.drawingSprite.node.scale = new Vec3(0.5, 0.5, 1);
+        // this.camera.targetTexture = this.renderTexture;
+    }
+
+    // 更新RenderTexture
+    updateRenderTexture() {
     }
 
     private initGraphics() {
