@@ -6,6 +6,9 @@ export class DrawCut extends Component {
     @property(Camera)
     camera: Camera = null!;
 
+    @property(Camera)
+    mainCamera: Camera = null!;
+
     @property(Sprite)
     drawingSprite: Sprite = null!;
 
@@ -27,7 +30,6 @@ export class DrawCut extends Component {
     start() {
         this.initRenderTexture();
         this.initGraphics();
-        this.setupTouchEvents();
     }
 
     private initRenderTexture() {
@@ -56,24 +58,8 @@ export class DrawCut extends Component {
         this.camera.targetTexture = renderTex;
         sp.texture = renderTex;
         this.drawingSprite.spriteFrame = sp;
-
-
-
-        // this.renderTexture = new RenderTexture();
-        // this.renderTexture.resize(this.width, this.height);
-        
-        // // 创建用于检测的Sprite
-        // const sp = new SpriteFrame();
-        // sp.texture = this.renderTexture;
-        // this.drawingSprite.spriteFrame = sp;
-        // const uit = this.drawingSprite.node.getComponent(UITransform);
-        // uit.setContentSize(this.width, this.height);
-        // this.drawingSprite.node.scale = new Vec3(0.5, 0.5, 1);
-        // this.camera.targetTexture = this.renderTexture;
-    }
-
-    // 更新RenderTexture
-    updateRenderTexture() {
+        const drawUit = this.drawingSprite.node.getComponent(UITransform);
+        drawUit.setContentSize(this.width, this.height);
     }
 
     private initGraphics() {
@@ -92,15 +78,8 @@ export class DrawCut extends Component {
         this.graphics.lineJoin = Graphics.LineJoin.ROUND;
     }
 
-    private setupTouchEvents() {
-        // Add touch event listeners to the node
-        this.node.on(Node.EventType.TOUCH_START, this.onTouchStart, this);
-        this.node.on(Node.EventType.TOUCH_MOVE, this.onTouchMove, this);
-        this.node.on(Node.EventType.TOUCH_END, this.onTouchEnd, this);
-        this.node.on(Node.EventType.TOUCH_CANCEL, this.onTouchEnd, this);
-    }
 
-    private onTouchStart(event: EventTouch) {
+    public onTouchStart(event: EventTouch) {
         console.log('onTouchStart');
         this.isDrawing = true;
         this.drawPoints = [];
@@ -116,7 +95,7 @@ export class DrawCut extends Component {
         this.graphics.moveTo(worldPos.x, worldPos.y);
     }
 
-    private onTouchMove(event: EventTouch) {
+    public onTouchMove(event: EventTouch) {
         if (!this.isDrawing) return;
 
         // console.log('onTouchMove');
@@ -135,7 +114,7 @@ export class DrawCut extends Component {
         this.graphics.stroke();
     }
 
-    private onTouchEnd(event: EventTouch) {
+    public onTouchEnd(event: EventTouch) {
         if (!this.isDrawing) return;
 
         this.isDrawing = false;
@@ -152,8 +131,9 @@ export class DrawCut extends Component {
 
     private screenToWorld(screenPos: Vec2): Vec2 {
         // Convert screen coordinates to node local coordinates
-        const worldPos = this.camera.screenToWorld(new Vec3(screenPos.x, screenPos.y, 0));
+        const worldPos = this.mainCamera.screenToWorld(new Vec3(screenPos.x, screenPos.y, 0));
         const screenVec3 = new Vec3(worldPos.x, worldPos.y, 0);
+        console.log('screenVec3', screenVec3);
         const localVec3 = this.node.getComponent(UITransform).convertToNodeSpaceAR(screenVec3);
         const result = new Vec2(localVec3.x, localVec3.y);
         return result;
@@ -213,6 +193,16 @@ export class DrawCut extends Component {
             }
         }
         return false;
+    }
+    
+    gmBig() {
+        const curScale = this.drawingSprite.node.scale;
+        this.drawingSprite.node.scale = new Vec3(curScale.x * 2, curScale.y * 2, 1);
+    }
+
+    gmSmall() {
+        const curScale = this.drawingSprite.node.scale;
+        this.drawingSprite.node.scale = new Vec3(curScale.x / 2, curScale.y / 2, 1);
     }
 }
 
