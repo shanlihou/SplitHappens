@@ -2,8 +2,9 @@
   "__version__": "1.0.6",
   "general": {
     "designResolution": {
-      "width": 1179,
-      "height": 2556
+      "width": 1170,
+      "height": 2532,
+      "fitHeight": true
     }
   },
   "layer": [

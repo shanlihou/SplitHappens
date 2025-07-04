@@ -1,0 +1,12 @@
+
+CCEffect %{
+  techniques:
+  - passes:
+    - vert: sprite-vs:vert
+      frag: sprite-fs:frag
+      properties:
+        texture: { value: white }
+        shadowColor: { value: [0,0,0,0.5], editor: { type: color } }
+        shadowOffset: { value: [10,-10], editor: { type: vec2 } }
+        shadowBlur: { value: 5.0, editor: { type: slider, range: [0,20] } }
+}%
