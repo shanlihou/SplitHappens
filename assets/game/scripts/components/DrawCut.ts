@@ -29,7 +29,7 @@ export class DrawCut extends Component {
     private isDrawing: boolean = false;
     private drawPoints: Vec2[] = [];
     private lineWidth: number = 5;
-    private lineColor: string = '#FF0000';
+    private lineColor: string = '#00FF00';
 
     start() {
         const uit = this.node.getComponent(UITransform);

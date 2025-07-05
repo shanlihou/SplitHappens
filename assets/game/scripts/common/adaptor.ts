@@ -128,17 +128,18 @@ export function captureImage(pixelBuff: Uint8Array, width: number, height: numbe
     const imageData = ctx.createImageData(width, height);
     
     // Flip the image vertically and copy pixels
-    for (let y = 0; y < height; y++) {
-        for (let x = 0; x < width; x++) {
-            const sourceIndex = (y * width + x) * 4;
-            const targetIndex = ((height - 1 - y) * width + x) * 4;
+    // for (let y = 0; y < height; y++) {
+    //     for (let x = 0; x < width; x++) {
+    //         const sourceIndex = (y * width + x) * 4;
+    //         const targetIndex = ((height - 1 - y) * width + x) * 4;
             
-            imageData.data[targetIndex] = pixelBuff[sourceIndex];     // R
-            imageData.data[targetIndex + 1] = pixelBuff[sourceIndex + 1]; // G
-            imageData.data[targetIndex + 2] = pixelBuff[sourceIndex + 2]; // B
-            imageData.data[targetIndex + 3] = pixelBuff[sourceIndex + 3]; // A
-        }
-    }
+    //         imageData.data[targetIndex] = pixelBuff[sourceIndex];     // R
+    //         imageData.data[targetIndex + 1] = pixelBuff[sourceIndex + 1]; // G
+    //         imageData.data[targetIndex + 2] = pixelBuff[sourceIndex + 2]; // B
+    //         imageData.data[targetIndex + 3] = pixelBuff[sourceIndex + 3]; // A
+    //     }
+    // }
+    imageData.data.set(pixelBuff);
     
     ctx.putImageData(imageData, 0, 0);
 

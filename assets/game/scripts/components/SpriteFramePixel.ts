@@ -43,7 +43,9 @@ export class SpriteFramePixel extends Component {
         const sprite = this.node.getComponent(Sprite);
         const spriteFrame = sprite.spriteFrame;
 
-        const pixels = this.readPixels(spriteFrame.texture as Texture2D);
+        const pixels = this.readPixels(spriteFrame.texture as Texture2D, 0, 0, spriteFrame.width, spriteFrame.height);
+        console.log('pixels width', spriteFrame.width);
+        console.log('pixels height', spriteFrame.height);
         captureImage(pixels, spriteFrame.width, spriteFrame.height);
     }
 
