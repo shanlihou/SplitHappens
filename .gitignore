@@ -23,3 +23,6 @@ node_modules/
 #//////////////////////////
 .idea/
 .DS_Store
+
+cocos-service.json
+information.json

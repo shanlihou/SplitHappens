@@ -730,9 +730,6 @@
     "camera": {
       "__id__": 7
     },
-    "mainCamera": {
-      "__id__": 4
-    },
     "drawingSprite": {
       "__id__": 10
     },
@@ -825,6 +822,12 @@
     "__prefab": null,
     "drawCutNode": {
       "__id__": 16
+    },
+    "hitTestNode": {
+      "__id__": 8
+    },
+    "mainCamera": {
+      "__id__": 4
     },
     "_id": "fewC123AJGYYCmPL+lHoRq"
   },

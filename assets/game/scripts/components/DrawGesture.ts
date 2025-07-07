@@ -1,11 +1,20 @@
-import { _decorator, Component, EventTouch, Node } from 'cc';
+import { _decorator, Camera, Component, EventTouch, Node, UITransform, Vec2, Vec3 } from 'cc';
 import { DrawCut } from './DrawCut';
+import { SpriteFramePixel } from './SpriteFramePixel';
 const { ccclass, property } = _decorator;
 
 @ccclass('DrawGesture')
 export class DrawGesture extends Component {
     @property(Node)
     drawCutNode: Node = null!;
+
+    @property(Node)
+    hitTestNode: Node = null!;
+
+    @property(Camera)
+    mainCamera: Camera = null!;
+
+    hitTestEnabled: boolean = true;
 
     start() {
         this.setupTouchEvents();
@@ -24,18 +33,43 @@ export class DrawGesture extends Component {
     }
 
     private onTouchStart(event: EventTouch) {
+        const touchPos = event.getLocation();
+        const worldPos = this.screenToWorld(touchPos);
+        if (this.hitTestEnabled) {
+            const hitTest = this.hitTestNode.getComponent(SpriteFramePixel);
+            if (hitTest.hitTest(worldPos.x, worldPos.y)) {
+                console.log('hit');
+            }
+            return;
+        }
+
         const drawCut = this.drawCutNode.getComponent(DrawCut);
-        drawCut.onTouchStart(event);
+        drawCut.onTouchStart(worldPos);
     }
 
     private onTouchMove(event: EventTouch) {
+        const touchPos = event.getLocation();
+        const worldPos = this.screenToWorld(touchPos);
+
         const drawCut = this.drawCutNode.getComponent(DrawCut);
-        drawCut.onTouchMove(event);
+        drawCut.onTouchMove(worldPos);
     }
 
     private onTouchEnd(event: EventTouch) {
+        const touchPos = event.getLocation();
+        const worldPos = this.screenToWorld(touchPos);
+
         const drawCut = this.drawCutNode.getComponent(DrawCut);
-        drawCut.onTouchEnd(event);
+        drawCut.onTouchEnd(worldPos);
+    }
+
+    private screenToWorld(screenPos: Vec2): Vec2 {
+        // Convert screen coordinates to node local coordinates
+        const worldPos = this.mainCamera.screenToWorld(new Vec3(screenPos.x, screenPos.y, 0));
+        const screenVec3 = new Vec3(worldPos.x, worldPos.y, 0);
+        const localVec3 = this.node.getComponent(UITransform).convertToNodeSpaceAR(screenVec3);
+        const result = new Vec2(localVec3.x, localVec3.y);
+        return result;
     }
 }
 

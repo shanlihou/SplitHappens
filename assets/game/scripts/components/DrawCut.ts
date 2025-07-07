@@ -7,9 +7,6 @@ export class DrawCut extends Component {
     @property(Camera)
     camera: Camera = null!;
 
-    @property(Camera)
-    mainCamera: Camera = null!;
-
     @property(Sprite)
     drawingSprite: Sprite = null!;
 
@@ -89,29 +86,20 @@ export class DrawCut extends Component {
     }
 
 
-    public onTouchStart(event: EventTouch) {
+    public onTouchStart(worldPos: Vec2) {
         console.log('onTouchStart');
         this.isDrawing = true;
         this.drawPoints = [];
         
-        const touchPos = event.getLocation();
-        const worldPos = this.screenToWorld(touchPos);
         this.drawPoints.push(worldPos);
-
-        console.log('touchPos', touchPos);
-        console.log('worldPos', worldPos);
-        
         // Start drawing
         this.graphics.moveTo(worldPos.x, worldPos.y);
     }
 
-    public onTouchMove(event: EventTouch) {
+    public onTouchMove(worldPos: Vec2) {
         if (!this.isDrawing) return;
 
         // console.log('onTouchMove');
-
-        const touchPos = event.getLocation();
-        const worldPos = this.screenToWorld(touchPos);
 
         if (this.checkNewLineIntersection(worldPos)) {
             console.log('intersect');
@@ -124,14 +112,12 @@ export class DrawCut extends Component {
         this.graphics.stroke();
     }
 
-    public onTouchEnd(event: EventTouch) {
+    public onTouchEnd(worldPos: Vec2) {
         if (!this.isDrawing) return;
 
         this.isDrawing = false;
         
         // Optional: Add final point if needed
-        const touchPos = event.getLocation();
-        const worldPos = this.screenToWorld(touchPos);
         this.drawPoints.push(worldPos);
         
         // Complete the line
@@ -139,15 +125,6 @@ export class DrawCut extends Component {
         this.graphics.stroke();
     }
 
-    private screenToWorld(screenPos: Vec2): Vec2 {
-        // Convert screen coordinates to node local coordinates
-        const worldPos = this.mainCamera.screenToWorld(new Vec3(screenPos.x, screenPos.y, 0));
-        const screenVec3 = new Vec3(worldPos.x, worldPos.y, 0);
-        console.log('screenVec3', screenVec3);
-        const localVec3 = this.node.getComponent(UITransform).convertToNodeSpaceAR(screenVec3);
-        const result = new Vec2(localVec3.x, localVec3.y);
-        return result;
-    }
 
     // Clear all drawings
     public clearDrawings() {
